@@ -15,7 +15,7 @@ export type PotholeMarker = {
   timestamp: string;           // ← ADDED
 };
 
-const API_BASE = 'http://localhost:5000';
+const API_BASE = 'https://YOUR_RENDER_BACKEND_URL';
 
 function App() {
   const [markers, setMarkers] = useState<PotholeMarker[]>([]);
