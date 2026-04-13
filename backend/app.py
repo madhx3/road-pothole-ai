@@ -5,18 +5,19 @@ from datetime import datetime
 import json, os
 
 app = Flask(__name__)
-CORS(app, origins=[                                          # ← CHANGED
-    "https://pothole-detection-kohl.vercel.app",
-    "http://localhost:5173"
-])
+
+# ✅ FIXED CORS (allow all origins for now)
+CORS(app, resources={r"/*": {"origins": "*"}})
 
 MARKERS_FILE = "markers.json"
+
 
 def load_markers():
     if os.path.exists(MARKERS_FILE):
         with open(MARKERS_FILE) as f:
             return json.load(f)
     return []
+
 
 def save_markers(markers):
     with open(MARKERS_FILE, "w") as f:
@@ -37,6 +38,7 @@ def predict():
         result = predict_pothole(file)
         return jsonify(result)
     except Exception as e:
+        print(f"[ERROR] {e}")  # 🔍 debug log
         return jsonify({"error": str(e)}), 500
 
 
@@ -49,6 +51,7 @@ def get_markers():
 def add_marker():
     markers = load_markers()
     data = request.get_json()
+
     new_marker = {
         "id": len(markers) + 1,
         "lat": data["lat"],
@@ -57,6 +60,7 @@ def add_marker():
         "confidence": data["confidence"],
         "timestamp": data.get("timestamp", datetime.now().isoformat()),
     }
+
     markers.append(new_marker)
     save_markers(markers)
     return jsonify(new_marker), 201
