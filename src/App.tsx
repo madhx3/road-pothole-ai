@@ -15,7 +15,7 @@ export type PotholeMarker = {
   timestamp: string;           // ← ADDED
 };
 
-const API_BASE = 'https://YOUR_RENDER_BACKEND_URL';
+const API_BASE = "https://road-pothole-ai.onrender.com";
 
 function App() {
   const [markers, setMarkers] = useState<PotholeMarker[]>([]);
