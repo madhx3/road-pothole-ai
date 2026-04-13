@@ -7,43 +7,14 @@ import tensorflow as tf
 # ── Model path ────────────────────────────────────────────────────────────────
 MODEL_PATH = "pothole_model.h5"
 
-# ── Load (or build) model ─────────────────────────────────────────────────────
-def build_model():
-    """
-    MobileNetV2-based binary classifier.
-    Output: 1 neuron (sigmoid) → 0 = no pothole, 1 = pothole
-    """
-    base = tf.keras.applications.MobileNetV2(
-        input_shape=(224, 224, 3),
-        include_top=False,
-        weights="imagenet",
-    )
-    base.trainable = False  # freeze pretrained weights
 
-    model = tf.keras.Sequential([
-        base,
-        tf.keras.layers.GlobalAveragePooling2D(),
-        tf.keras.layers.Dense(128, activation="relu"),
-        tf.keras.layers.Dropout(0.3),
-        tf.keras.layers.Dense(1, activation="sigmoid"),  # binary output
-    ])
-
-    model.compile(
-        optimizer="adam",
-        loss="binary_crossentropy",
-        metrics=["accuracy"],
-    )
-    return model
-
-
+# ── Load model (STRICT) ───────────────────────────────────────────────────────
 def load_model():
-    if os.path.exists(MODEL_PATH):
-        print(f"[INFO] Loading saved model from {MODEL_PATH}")
-        return tf.keras.models.load_model(MODEL_PATH)
-    else:
-        print("[WARN] No saved model found — using untrained base model.")
-        print("[WARN] Train the model first using train.py for accurate predictions.")
-        return build_model()
+    if not os.path.exists(MODEL_PATH):
+        raise FileNotFoundError(f"❌ Model file NOT FOUND at {MODEL_PATH}")
+
+    print(f"[INFO] Loading saved model from {MODEL_PATH}")
+    return tf.keras.models.load_model(MODEL_PATH)
 
 
 # Load once at startup
@@ -67,7 +38,9 @@ def predict_pothole(file) -> dict:
         { "detected": bool, "confidence": float (0-100) }
     """
     img = preprocess(file)
+
     raw = float(model.predict(img, verbose=0)[0][0])
+    print(f"[DEBUG] Raw prediction: {raw}")   # 🔥 IMPORTANT DEBUG
 
     detected = raw >= 0.3
     confidence = round(raw * 100, 2)
