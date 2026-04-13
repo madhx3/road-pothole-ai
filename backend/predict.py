@@ -34,8 +34,8 @@ def preprocess(file) -> np.ndarray:
     img_bytes = file.read()
     img = Image.open(io.BytesIO(img_bytes)).convert("RGB")
 
-    # ⚠️ keep 224 (matches training)
-    img = img.resize((224, 224))
+   # ✅ match training size
+    img = img.resize((160,160))
 
     arr = np.array(img, dtype=np.float32) / 255.0
     return np.expand_dims(arr, axis=0)
