@@ -67,13 +67,13 @@ def predict_pothole(file) -> dict:
         { "detected": bool, "confidence": float (0-100) }
     """
     img = preprocess(file)
-    raw = float(model.predict(img, verbose=0)[0][0])   # sigmoid output 0-1
+    raw = float(model.predict(img, verbose=0)[0][0])
 
-    detected   = raw >= 0.5
-    confidence = round(raw * 100 if detected else (1 - raw) * 100, 2)
+    detected = raw >= 0.3
+    confidence = round(raw * 100, 2)
 
     return {
-        "detected":   detected,
+        "detected": detected,
         "confidence": confidence,
-        "raw_score":  round(raw, 4),   # useful for debugging
+        "raw_score": round(raw, 4),
     }
