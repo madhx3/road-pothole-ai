@@ -58,7 +58,7 @@ export default function Demo({ onPotholeDetected }: DemoProps) {
     formData.append("file", file);
 
     try {
-      const response = await fetch("https://road-pothole-ai.onrender.com/predict", {
+      const response = await fetch("https://road-pothole-ai-production.up.railway.app/predict", {
         method: "POST",
         body: formData,
       });
