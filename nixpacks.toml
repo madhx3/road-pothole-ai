@@ -1,0 +1,8 @@
+[phases.setup]
+nixPkgs = ["python310", "python310Packages.pip"]
+
+[phases.build]
+cmds = ["pip install -r backend/requirements.txt"]
+
+[phases.start]
+cmd = "cd backend && gunicorn app:app --bind 0.0.0.0:$PORT --timeout 120"
